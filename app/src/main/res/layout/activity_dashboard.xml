@@ -101,6 +101,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+
             <TextView
                 android:id="@+id/textViewClassMentor"
                 android:layout_width="wrap_content"
@@ -111,9 +112,10 @@
                 android:textColor="@color/green_500"
                 android:textSize="16sp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/todoButton"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewMentorName" />
-
+                app:layout_constraintTop_toBottomOf="@+id/textViewMentorName"
+                app:layout_constraintVertical_bias="0.0" />
 
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/profileButton"
