@@ -78,6 +78,12 @@ class DashboardActivity : AppCompatActivity() {
                 }
             )
         }
+
+        binding.themeCard.setOnClickListener {
+            val intent = Intent(this, ComponentActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onStart() {
