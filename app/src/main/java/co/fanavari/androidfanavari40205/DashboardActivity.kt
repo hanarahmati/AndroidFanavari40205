@@ -84,6 +84,11 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.profileButton.setOnClickListener {
+            val intent = Intent(this, NavigationActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onStart() {
