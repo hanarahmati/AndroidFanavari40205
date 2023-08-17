@@ -7,7 +7,13 @@ plugins {
     //hilt
     id 'com.google.dagger.hilt.android'
     id 'kotlin-kapt'
+
+    //parcelize
+    id 'kotlin-parcelize'
 }
+def apikeyPropertiesFile = rootProject.file("apikey.properties")
+def apikeyPro = new Properties()
+apikeyPro.load(new FileInputStream(apikeyPropertiesFile))
 
 android {
     namespace 'co.fanavari.androidfanavari40205'
@@ -38,6 +44,7 @@ android {
     }
     buildFeatures{
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -58,8 +65,21 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     //hilt
-    implementation "com.google.dagger:hilt-android:2.44"
-    kapt "com.google.dagger:hilt-compiler:2.44"
+    implementation "com.google.dagger:hilt-android:2.47"
+    kapt "com.google.dagger:hilt-compiler:2.47"
+
+    //retrofit
+    def retrofitVersion = '2.9.0'
+    def paging_version = '3.2.0'
+    implementation ("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation ("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+
+    //paging 3
+    implementation("androidx.paging:paging-runtime-ktx:$paging_version")
+
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.15.1'
 
 }
 

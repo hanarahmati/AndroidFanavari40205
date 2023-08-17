@@ -27,4 +27,9 @@
             android:id="@+id/action_secondFragment_to_firstFragment"
             app:destination="@id/firstFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="co.fanavari.androidfanavari40205.ui.gallery.GalleryFragment"
+        android:label="fragment_gallery"
+        tools:layout="@layout/fragment_gallery" />
 </navigation>
