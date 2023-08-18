@@ -1,4 +1,4 @@
-package co.fanavari.androidfanavari40205.data
+package co.fanavari.androidfanavari40205.data.unsplashPhoto
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

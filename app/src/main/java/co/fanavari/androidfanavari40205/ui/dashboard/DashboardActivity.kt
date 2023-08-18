@@ -94,6 +94,12 @@ class DashboardActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.databaseCard.setOnClickListener {
+            val intent = Intent(this, NavigationActivity::class.java)
+            intent.putExtra("PAGE_DB", true)
+            startActivity(intent)
+        }
+
     }
 
     override fun onStart() {

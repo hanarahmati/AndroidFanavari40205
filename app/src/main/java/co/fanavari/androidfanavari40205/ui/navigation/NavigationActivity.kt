@@ -39,6 +39,13 @@ class NavigationActivity : AppCompatActivity() {
 
         drawerLayout = binding.drawerLayout
 
+        intent.extras?.let {
+            if (it.getBoolean("PAGE_DB")){
+                val navGragh = navController.navInflater.inflate(R.navigation.nav_graph)
+                navGragh.setStartDestination(R.id.taskFragment)
+                navController.graph = navGragh
+            }
+        }
         binding.navigationView.setupWithNavController(navController)
         binding.bottomNavView.setupWithNavController(navController)
 

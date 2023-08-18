@@ -3,7 +3,7 @@ package co.fanavari.androidfanavari40205.repository
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import co.fanavari.androidfanavari40205.api.UnsplashApi
-import co.fanavari.androidfanavari40205.data.UnsplashPhoto
+import co.fanavari.androidfanavari40205.data.unsplashPhoto.UnsplashPhoto
 import retrofit2.HttpException
 import java.io.IOException
 
