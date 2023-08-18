@@ -1,7 +1,7 @@
 package co.fanavari.androidfanavari40205.ui.gallery
 
 import androidx.recyclerview.widget.RecyclerView
-import co.fanavari.androidfanavari40205.data.UnsplashPhoto
+import co.fanavari.androidfanavari40205.data.unsplashPhoto.UnsplashPhoto
 import co.fanavari.androidfanavari40205.databinding.ItemUnsplashBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions

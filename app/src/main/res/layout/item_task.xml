@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <CheckBox
+        android:id="@+id/check_box_completed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/guide_bottom_item_task"
+        app:layout_constraintEnd_toStartOf="@+id/text_view_name"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/guide_start_item_task"
+        app:layout_constraintTop_toBottomOf="@+id/guide_top_item_task"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <ImageView
+        android:id="@+id/label_priority"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_priority"
+        android:padding="0dp"
+        app:layout_constraintStart_toEndOf="@+id/guide_end_item_task"
+        app:layout_constraintTop_toBottomOf="@+id/guide_top_item_task"
+        app:layout_constraintBottom_toTopOf="@id/guide_bottom_item_task"/>
+
+    <TextView
+        android:id="@+id/text_view_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="center_vertical"
+        android:maxLines="1"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/check_box_completed"
+        app:layout_constraintEnd_toStartOf="@+id/guide_end_item_task"
+        app:layout_constraintStart_toEndOf="@+id/check_box_completed"
+        app:layout_constraintTop_toTopOf="@+id/check_box_completed"
+        tools:text="Example item" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_top_item_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_bottom_item_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.8" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_end_item_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.87" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guide_start_item_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.04" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

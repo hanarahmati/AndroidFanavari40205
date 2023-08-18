@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import co.fanavari.androidfanavari40205.data.UnsplashPhoto
+import co.fanavari.androidfanavari40205.data.unsplashPhoto.UnsplashPhoto
 import co.fanavari.androidfanavari40205.databinding.ItemUnsplashBinding
 
 class UnsplashPhotoAdapter: PagingDataAdapter<UnsplashPhoto,

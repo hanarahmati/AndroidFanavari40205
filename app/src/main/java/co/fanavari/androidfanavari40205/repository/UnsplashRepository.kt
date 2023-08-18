@@ -4,7 +4,6 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.liveData
 import co.fanavari.androidfanavari40205.api.UnsplashApi
-import co.fanavari.myapplication20.repository.UnsplashPagingSource
 import javax.inject.Inject
 import javax.inject.Singleton
 

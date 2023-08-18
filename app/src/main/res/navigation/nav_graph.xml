@@ -32,4 +32,8 @@
         android:name="co.fanavari.androidfanavari40205.ui.gallery.GalleryFragment"
         android:label="fragment_gallery"
         tools:layout="@layout/fragment_gallery" />
+    <fragment
+        android:id="@+id/tasksFragment"
+        android:name="co.fanavari.androidfanavari40205.ui.task.TasksFragment"
+        android:label="TasksFragment" />
 </navigation>

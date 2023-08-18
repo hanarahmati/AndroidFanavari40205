@@ -47,9 +47,9 @@ class DashboardActivity : AppCompatActivity() {
             createAlarm("test", 12, 15)
         }
 
-        binding.profileButton.setOnClickListener {
+       /* binding.profileButton.setOnClickListener {
             openWebPage("https://www.fanavari.co")
-        }
+        }*/
 
         binding.imageButtonLogout.setOnClickListener {
             composeEmail(
@@ -86,6 +86,12 @@ class DashboardActivity : AppCompatActivity() {
 
         binding.profileButton.setOnClickListener {
             val intent = Intent(this, NavigationActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.databaseCard.setOnClickListener {
+            val intent = Intent(this, NavigationActivity::class.java)
+            intent.putExtra("PAGE_DB", true)
             startActivity(intent)
         }
 
