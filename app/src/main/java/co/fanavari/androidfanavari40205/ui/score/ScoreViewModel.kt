@@ -1,4 +1,4 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.score
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

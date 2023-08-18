@@ -1,7 +1,5 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.navigation
 
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.drawerlayout.widget.DrawerLayout
@@ -12,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.databinding.ActivityNavigationBinding
 import dagger.hilt.android.AndroidEntryPoint
 

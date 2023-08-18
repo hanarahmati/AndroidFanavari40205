@@ -1,7 +1,6 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.dashboard
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -10,9 +9,15 @@ import android.provider.AlarmClock
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import co.fanavari.androidfanavari40205.ui.extraui.ComponentActivity
+import co.fanavari.androidfanavari40205.utils.Constants
+import co.fanavari.androidfanavari40205.ui.extraui.IntentExampleActivity
+import co.fanavari.androidfanavari40205.ui.navigation.NavigationActivity
+import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.databinding.ActivityDashboardBinding
+import co.fanavari.androidfanavari40205.utils.showToast
+import co.fanavari.androidfanavari40205.ui.score.MainActivity
 import com.google.android.material.button.MaterialButton
-import java.time.Duration
 
 class DashboardActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.extraui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

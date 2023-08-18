@@ -1,4 +1,4 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.extraui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
+import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {

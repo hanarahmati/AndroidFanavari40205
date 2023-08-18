@@ -1,8 +1,10 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.extraui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.databinding.ActivityComponentBinding
+import co.fanavari.androidfanavari40205.utils.showToast
 import com.google.android.material.bottomappbar.BottomAppBar
 
 class ComponentActivity : AppCompatActivity() {

@@ -26,7 +26,7 @@ class UnsplashPagingSource(
 
         return try {
             val response = unsplashApi.searchPhoto(query, position, params.loadSize)
-            val photos = response.result
+            val photos = response.results
 
             LoadResult.Page(
                 data = photos,

@@ -1,8 +1,7 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.score
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import co.fanavari.androidfanavari40205.databinding.ActivityMainBinding

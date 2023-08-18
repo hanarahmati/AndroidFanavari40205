@@ -14,16 +14,16 @@
         android:theme="@style/Theme.AndroidFanavari40205"
         tools:targetApi="31">
         <activity
-            android:name=".NavigationActivity"
+            android:name=".ui.navigation.NavigationActivity"
             android:exported="false" />
         <activity
-            android:name=".ComponentActivity"
+            android:name=".ui.extraui.ComponentActivity"
             android:exported="false" />
         <activity
-            android:name=".IntentExampleActivity"
+            android:name=".ui.extraui.IntentExampleActivity"
             android:exported="false" />
         <activity
-            android:name=".DashboardActivity"
+            android:name=".ui.dashboard.DashboardActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -40,10 +40,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.score.MainActivity"
             android:exported="true" />
     </application>
 
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

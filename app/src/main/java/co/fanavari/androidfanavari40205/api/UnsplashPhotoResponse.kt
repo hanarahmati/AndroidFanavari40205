@@ -3,6 +3,6 @@ package co.fanavari.androidfanavari40205.api
 import co.fanavari.androidfanavari40205.data.UnsplashPhoto
 
 data class UnsplashPhotoResponse(
-    val result: List<UnsplashPhoto>
+    val results: List<UnsplashPhoto>
 ) {
 }

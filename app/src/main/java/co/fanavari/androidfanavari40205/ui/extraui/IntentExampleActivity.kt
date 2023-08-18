@@ -1,10 +1,11 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.ui.extraui
 
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import co.fanavari.androidfanavari40205.databinding.ActivityIntentExampleBinding
+import co.fanavari.androidfanavari40205.utils.Constants
 
 class IntentExampleActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIntentExampleBinding

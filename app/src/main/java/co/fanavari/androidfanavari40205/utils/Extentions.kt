@@ -1,4 +1,4 @@
-package co.fanavari.androidfanavari40205
+package co.fanavari.androidfanavari40205.utils
 
 import android.content.Context
 import android.widget.Toast
