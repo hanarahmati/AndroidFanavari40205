@@ -20,6 +20,10 @@
                 android:id="@+id/galleryFragment"
                 android:title="gallery"
                 />
+            <item
+                android:id="@+id/coroutinesFragment"
+                android:title="coroutines"
+                />
         </menu>
 
     </item>

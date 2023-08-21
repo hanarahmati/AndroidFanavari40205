@@ -2,6 +2,7 @@ package co.fanavari.androidfanavari40205.ui.score
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import co.fanavari.androidfanavari40205.databinding.ActivityMainBinding
@@ -22,6 +23,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.scoreText.setOnClickListener {
             viewModel.incrementScore()
+        }
+
+        //session A19-06-04
+        binding.textView4.setOnClickListener {
+            binding.group.visibility = View.VISIBLE
         }
     }
 }

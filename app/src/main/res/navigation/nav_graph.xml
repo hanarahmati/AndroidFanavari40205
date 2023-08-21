@@ -22,6 +22,7 @@
         <argument
             android:name="classNo"
             app:argType="integer"
+            android:defaultValue="0"
             />
         <action
             android:id="@+id/action_secondFragment_to_firstFragment"
@@ -32,4 +33,15 @@
         android:name="co.fanavari.androidfanavari40205.ui.gallery.GalleryFragment"
         android:label="fragment_gallery"
         tools:layout="@layout/fragment_gallery" />
+    <fragment
+        android:id="@+id/coroutinesFragment"
+        android:name="co.fanavari.androidfanavari40205.ui.coroutines.CoroutinesFragment"
+        android:label="fragment_coroutines"
+        tools:layout="@layout/fragment_coroutines" >
+        <action
+            android:id="@+id/action_coroutinesFragment_to_galleryFragment"
+            app:destination="@id/galleryFragment" />
+    </fragment>
+
+
 </navigation>

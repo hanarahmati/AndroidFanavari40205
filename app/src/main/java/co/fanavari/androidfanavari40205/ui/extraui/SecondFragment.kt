@@ -29,11 +29,15 @@ class SecondFragment : Fragment() {
             container, false
         )
         //val view = binding.root
+
         binding.textViewFragment2.text =
             "this is our  ${arg.classNo} class"
 
         binding.textViewFragment2.setOnClickListener {
-            view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.action_secondFragment_to_firstFragment) }
+            view?.let { it1 ->
+                Navigation.findNavController(it1)
+                    .navigate(R.id.action_secondFragment_to_firstFragment)
+            }
         }
 
 
