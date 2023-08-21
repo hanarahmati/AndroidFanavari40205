@@ -1,13 +1,16 @@
 package co.fanavari.androidfanavari40205.ui.task
 
 import androidx.lifecycle.*
-import androidx.paging.PagingData
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.data.task.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +23,9 @@ class TasksViewModel @Inject constructor(
     val searchQuery = MutableStateFlow("")
     val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
     val hideCompleted =  MutableStateFlow(false)
+
+    private val tasksEventChannel = Channel<TasksEvent>()
+    val tasksEvent = tasksEventChannel.receiveAsFlow()
 
     /*private val tasksFlow = searchQuery.flatMapLatest {
         taskDao.getTasks(it)
@@ -35,6 +41,29 @@ class TasksViewModel @Inject constructor(
     }
 
     val tasks = tasksFlow.asLiveData()
+
+    fun onTaskSelected(task: Task) {
+
+    }
+
+    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch {
+        taskDao.update(task.copy(completed = isChecked))
+    }
+
+    fun onTaskSwiped(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        taskDao.delete(task)
+        tasksEventChannel.send(TasksEvent.ShowUndoDeleteTaskMessage(task))
+    }
+
+    fun onUndoDeleteClick(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        taskDao.insert(task)
+    }
+
+    sealed class TasksEvent {
+        data class ShowUndoDeleteTaskMessage(val task: Task) : TasksEvent()
+    }
+
+
 }
 
 enum class SortOrder { BY_NAME, BY_DATE}

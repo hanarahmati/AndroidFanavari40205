@@ -3,17 +3,27 @@ package co.fanavari.androidfanavari40205.ui.task
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import co.fanavari.androidfanavari40205.R
+import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.databinding.FragmentTasksBinding
 import co.fanavari.androidfanavari40205.utils.onQueryTextChanged
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class TasksFragment : Fragment(R.layout.fragment_tasks) {
+class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClickListener {
     private val viewModel: TasksViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -21,7 +31,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
 
         val binding = FragmentTasksBinding.bind(view)
 
-        val taskAdapter = TasksAdapter()
+        val taskAdapter = TasksAdapter(this)
 
         binding.apply {
             recyclerViewTasks.apply {
@@ -35,45 +45,92 @@ class TasksFragment : Fragment(R.layout.fragment_tasks) {
             taskAdapter.submitList(it)
         }
 
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.menu_fragment_tasks, menu)
 
-    }
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_fragment_tasks, menu)
+                searchView.onQueryTextChanged {
+                    viewModel.searchQuery.value = it
+                }
+            }
 
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_sort_by_name -> {
+                        viewModel.sortOrder.value = SortOrder.BY_NAME
+                        true
+                    }
 
-        searchView.onQueryTextChanged {
-            viewModel.searchQuery.value = it
+                    R.id.action_sort_by_date_created -> {
+                        viewModel.sortOrder.value = SortOrder.BY_DATE
+                        true
+                    }
+
+                    R.id.action_hide_completed_tasks -> {
+
+                        menuItem.isChecked = !menuItem.isChecked
+                        viewModel.hideCompleted.value = menuItem.isChecked
+                        true
+                    }
+
+                    R.id.action_delete_all_completed_tasks -> {
+
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+
+        ItemTouchHelper(object  : ItemTouchHelper.SimpleCallback(0,
+            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+
+        ){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val task = taskAdapter.currentList[viewHolder.absoluteAdapterPosition]
+                viewModel.onTaskSwiped(task)
+            }
+
+        }).attachToRecyclerView(binding.recyclerViewTasks)
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.tasksEvent.collect { event ->
+                when (event) {
+                    is TasksViewModel.TasksEvent.ShowUndoDeleteTaskMessage -> {
+                        Snackbar.make(requireView(), "Task deleted", Snackbar.LENGTH_LONG)
+                            .setAction("UNDO") {
+                                viewModel.onUndoDeleteClick(event.task)
+                            }.show()
+                    }
+                }
+
+            }
+            }
         }
 
     }
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
 
-            R.id.action_sort_by_name -> {
-                viewModel.sortOrder.value = SortOrder.BY_NAME
-                true
-            }
+    override fun onItemClick(task: Task) {
+        viewModel.onTaskSelected(task)
+    }
 
-            R.id.action_sort_by_date_created -> {
-                viewModel.sortOrder.value = SortOrder.BY_DATE
-                true
-            }
-
-            R.id.action_hide_completed_tasks -> {
-
-                item.isChecked = !item.isChecked
-                viewModel.hideCompleted.value = item.isChecked
-                true
-            }
-
-            R.id.action_delete_all_completed_tasks -> {
-
-                true
-            }
-            else -> false
-        }
+    override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
+        viewModel.onTaskCheckedChanged(task, isChecked)
     }
 }
