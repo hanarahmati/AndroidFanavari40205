@@ -7,6 +7,7 @@ import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.data.task.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -18,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val taskDao: TaskDao,
-    private val state: SavedStateHandle
+    state: SavedStateHandle
 ) : ViewModel() {
 
     //val tasks = taskDao.getTask().asLiveData()
@@ -37,6 +38,7 @@ class TasksViewModel @Inject constructor(
     }*/
 
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val tasksFlow = combine(
         searchQuery.asFlow()
         , sortOrder, hideCompleted
@@ -48,7 +50,7 @@ class TasksViewModel @Inject constructor(
 
     val tasks = tasksFlow.asLiveData()
 
-    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch {
+    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         taskDao.update(task.copy(completed = isChecked))
     }
 
@@ -79,12 +81,17 @@ class TasksViewModel @Inject constructor(
         tasksEventChannel.send(TasksEvent.ShowTaskSavedConfirmationMessage(text))
     }
 
+    fun onDeleteAllCompletedClick()  = viewModelScope.launch {
+        tasksEventChannel.send(TasksEvent.NavigateToDeleteAllCompletedScreen)
+    }
+
 
     sealed class TasksEvent {
         data class ShowUndoDeleteTaskMessage(val task: Task) : TasksEvent()
         object NavigateToAddTaskScreen : TasksEvent()
         data class NavigateToEditTaskScreen(val task: Task) : TasksEvent()
         data class ShowTaskSavedConfirmationMessage(val msg: String) : TasksEvent()
+        object NavigateToDeleteAllCompletedScreen: TasksEvent()
     }
 
 }
