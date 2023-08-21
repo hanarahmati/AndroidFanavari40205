@@ -10,12 +10,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.databinding.FragmentTasksBinding
+import co.fanavari.androidfanavari40205.utils.exhaustive
 import co.fanavari.androidfanavari40205.utils.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +41,12 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
                 layoutManager = LinearLayoutManager(requireContext())
                 setHasFixedSize(true)
             }
+        }
+
+        requireActivity().supportFragmentManager.setFragmentResultListener("add_edit_req",viewLifecycleOwner) {
+                _, bundle ->
+            val result = bundle.getInt("add_edit_result")
+            viewModel.onAddEditResult(result)
         }
 
         viewModel.tasks.observe(viewLifecycleOwner) {
@@ -82,16 +90,18 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
 
                         true
                     }
+
                     else -> false
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
 
-        ItemTouchHelper(object  : ItemTouchHelper.SimpleCallback(0,
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
 
-        ){
+        ) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -110,20 +120,44 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            viewModel.tasksEvent.collect { event ->
-                when (event) {
-                    is TasksViewModel.TasksEvent.ShowUndoDeleteTaskMessage -> {
-                        Snackbar.make(requireView(), "Task deleted", Snackbar.LENGTH_LONG)
-                            .setAction("UNDO") {
-                                viewModel.onUndoDeleteClick(event.task)
-                            }.show()
-                    }
+                viewModel.tasksEvent.collect { event ->
+                    when (event) {
+                        is TasksViewModel.TasksEvent.ShowUndoDeleteTaskMessage -> {
+                            Snackbar.make(requireView(), "Task deleted", Snackbar.LENGTH_LONG)
+                                .setAction("UNDO") {
+                                    viewModel.onUndoDeleteClick(event.task)
+                                }.show()
+                        }
+
+                        is TasksViewModel.TasksEvent.NavigateToAddTaskScreen -> {
+                            val action =
+                                TasksFragmentDirections.actionTasksFragmentToAddEditTaskFragment(
+                                    null,
+                                    "New Task"
+                                )
+                            findNavController(this@TasksFragment).navigate(action)
+                        }
+
+                        is TasksViewModel.TasksEvent.NavigateToEditTaskScreen -> {
+                            val action =
+                                TasksFragmentDirections.actionTasksFragmentToAddEditTaskFragment(
+                                    event.task,
+                                    "Edit Task"
+                                )
+                            findNavController(this@TasksFragment).navigate(action)
+                        }
+
+                        is TasksViewModel.TasksEvent.ShowTaskSavedConfirmationMessage -> {
+                            Snackbar.make(requireView(), event.msg , Snackbar.LENGTH_SHORT).show()
+                        }
+                    }.exhaustive
                 }
 
             }
-            }
         }
-
+        binding.fabAddTask.setOnClickListener {
+            viewModel.onAddNewTaskClick()
+        }
     }
 
     override fun onItemClick(task: Task) {
@@ -133,4 +167,7 @@ class TasksFragment : Fragment(R.layout.fragment_tasks), TasksAdapter.OnItemClic
     override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
         viewModel.onTaskCheckedChanged(task, isChecked)
     }
+
+
 }
+

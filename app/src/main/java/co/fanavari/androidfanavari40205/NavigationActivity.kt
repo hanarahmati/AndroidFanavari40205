@@ -1,5 +1,6 @@
 package co.fanavari.androidfanavari40205
 
+import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -88,3 +89,5 @@ class NavigationActivity : AppCompatActivity() {
     }
 
 }
+const val ADD_TASK_RESULT_OK = Activity.RESULT_FIRST_USER
+const val EDIT_TASK_RESULT_OK = Activity.RESULT_FIRST_USER + 1
