@@ -1,7 +1,6 @@
 package co.fanavari.androidfanavari40205.data.task
 
 import androidx.room.*
-import co.fanavari.androidfanavari40205.ui.task.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao

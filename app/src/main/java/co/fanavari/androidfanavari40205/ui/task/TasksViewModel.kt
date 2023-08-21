@@ -3,13 +3,14 @@ package co.fanavari.androidfanavari40205.ui.task
 import androidx.lifecycle.*
 import co.fanavari.androidfanavari40205.ADD_TASK_RESULT_OK
 import co.fanavari.androidfanavari40205.EDIT_TASK_RESULT_OK
+import co.fanavari.androidfanavari40205.data.task.PreferencesManager
+import co.fanavari.androidfanavari40205.data.task.SortOrder
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.data.task.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TasksViewModel @Inject constructor(
     private val taskDao: TaskDao,
-    state: SavedStateHandle
+    state: SavedStateHandle,
+    private val preferencesManager: PreferencesManager
 ) : ViewModel() {
 
     //val tasks = taskDao.getTask().asLiveData()
@@ -27,18 +29,20 @@ class TasksViewModel @Inject constructor(
     //    val searchQuery = MutableStateFlow("")
     val searchQuery = state.getLiveData("searchQuery", "")
 
-    val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
-    val hideCompleted = MutableStateFlow(false)
+    // val sortOrder = MutableStateFlow(SortOrder.BY_DATE)
+    //val hideCompleted = MutableStateFlow(false)
 
     private val tasksEventChannel = Channel<TasksEvent>()
     val tasksEvent = tasksEventChannel.receiveAsFlow()
+
+    val preferencesFlow = preferencesManager.preferencesFlow
 
     /*private val tasksFlow = searchQuery.flatMapLatest {
         taskDao.getTasks(it)
     }*/
 
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
     private val tasksFlow = combine(
         searchQuery.asFlow()
         , sortOrder, hideCompleted
@@ -46,13 +50,35 @@ class TasksViewModel @Inject constructor(
         Triple(query, sortOrder, hideCompleted)
     }.flatMapLatest { (query, sortOrder, hideCompleted) ->
         taskDao.getTasks(query, sortOrder, hideCompleted)
+    }*/
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val tasksFlow = combine(
+        searchQuery.asFlow(), preferencesFlow
+    ) { query, filterPreferences ->
+        Pair(query, filterPreferences)
+    }.flatMapLatest { (query, filterPreferences) ->
+        taskDao.getTasks(query, filterPreferences.sortOrder, filterPreferences.hideCompleted)
+
+    }
+
+
+    fun onSortOrderSelected(sortOrder: SortOrder) = viewModelScope.launch {
+
+        preferencesManager.updateSortOrder(sortOrder)
+    }
+
+    fun onHideCompletedClicked(hideCompleted: Boolean) = viewModelScope.launch {
+
+        preferencesManager.updateHideCompleted(hideCompleted)
     }
 
     val tasks = tasksFlow.asLiveData()
 
-    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        taskDao.update(task.copy(completed = isChecked))
-    }
+    fun onTaskCheckedChanged(task: Task, isChecked: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            taskDao.update(task.copy(completed = isChecked))
+        }
 
     fun onTaskSwiped(task: Task) = viewModelScope.launch(Dispatchers.IO) {
         taskDao.delete(task)
@@ -71,17 +97,18 @@ class TasksViewModel @Inject constructor(
         tasksEventChannel.send(TasksEvent.NavigateToEditTaskScreen(task))
     }
 
-    fun onAddEditResult(result : Int){
-        when(result){
+    fun onAddEditResult(result: Int) {
+        when (result) {
             ADD_TASK_RESULT_OK -> showTaskSavedConfirmationMessage("Task Added")
             EDIT_TASK_RESULT_OK -> showTaskSavedConfirmationMessage("Task Updated")
         }
     }
+
     private fun showTaskSavedConfirmationMessage(text: String) = viewModelScope.launch {
         tasksEventChannel.send(TasksEvent.ShowTaskSavedConfirmationMessage(text))
     }
 
-    fun onDeleteAllCompletedClick()  = viewModelScope.launch {
+    fun onDeleteAllCompletedClick() = viewModelScope.launch {
         tasksEventChannel.send(TasksEvent.NavigateToDeleteAllCompletedScreen)
     }
 
@@ -91,9 +118,9 @@ class TasksViewModel @Inject constructor(
         object NavigateToAddTaskScreen : TasksEvent()
         data class NavigateToEditTaskScreen(val task: Task) : TasksEvent()
         data class ShowTaskSavedConfirmationMessage(val msg: String) : TasksEvent()
-        object NavigateToDeleteAllCompletedScreen: TasksEvent()
+        object NavigateToDeleteAllCompletedScreen : TasksEvent()
     }
 
 }
 
-enum class SortOrder { BY_NAME, BY_DATE }
+//enum class SortOrder { BY_NAME, BY_DATE }

@@ -112,6 +112,10 @@ dependencies {
     kapt("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
     // alternately - if using Java8, use the following instead of lifecycle-compiler
     implementation("androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion")
+
+    //data store
+    def dataStoreVersion = '1.0.0'
+    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
 }
 
 //hilt
