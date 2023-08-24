@@ -79,6 +79,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
                                 .setAction("UNDO"){
                                     viewModel.onUndoDeleteItem(event.task)
                                 }
+                                .show()
                         }
                     }
 
