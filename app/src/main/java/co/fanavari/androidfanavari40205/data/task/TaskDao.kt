@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
-/*
-    @Query("SELECT * FROM TASK_TABLE")
-    fun getTask(): Flow<List<Task>>*/
+    /*
+        @Query("SELECT * FROM TASK_TABLE")
+        fun getTask(): Flow<List<Task>>*/
 
     /*@Query("SELECT * FROM TASK_TABLE WHERE name LIKE '%' || :searchQuery || '%' ORDER BY important DESC")
     fun getTask(searchQuery: String): Flow<List<Task>>*/
@@ -27,17 +27,17 @@ interface TaskDao {
 
 
     fun getTasks(query: String, sortOrder: SortOrder, hideCompleted: Boolean): Flow<List<Task>> =
-        when(sortOrder){
-        SortOrder.BY_DATE -> getTasksSortedByDate(query, hideCompleted)
-        SortOrder.BY_NAME -> getTasksSortedByName(query, hideCompleted)
-    }
+        when (sortOrder) {
+            SortOrder.BY_DATE -> getTasksSortedByDate(query, hideCompleted)
+            SortOrder.BY_NAME -> getTasksSortedByName(query, hideCompleted)
+        }
 
-@Insert(onConflict = OnConflictStrategy.REPLACE)
-fun insert(task: Task)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(task: Task)
 
-@Update
-fun update(task: Task)
+    @Update
+    fun update(task: Task)
 
-@Delete
-fun delete(task: Task)
+    @Delete
+    fun delete(task: Task)
 }

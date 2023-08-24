@@ -13,12 +13,13 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import co.fanavari.androidfanavari40205.R
+import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.databinding.FragmentTaskBinding
 import co.fanavari.androidfanavari40205.utils.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class TaskFragment : Fragment(R.layout.fragment_task) {
+class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickListener {
 
     private val viewModel: TaskViewModel by viewModels()
     private lateinit var searchView: SearchView
@@ -27,7 +28,7 @@ class TaskFragment : Fragment(R.layout.fragment_task) {
         super.onViewCreated(view, savedInstanceState)
         val binding = FragmentTaskBinding.bind(view)
 
-        val taskAdapter = TaskAdapter()
+        val taskAdapter = TaskAdapter(this)
 
         binding.apply {
             recyclerViewTasks.apply {
@@ -101,6 +102,14 @@ class TaskFragment : Fragment(R.layout.fragment_task) {
     override fun onDestroyView() {
         super.onDestroyView()
         searchView.setOnQueryTextListener(null)
+    }
+
+    override fun onItemClick(task: Task) {
+
+    }
+
+    override fun onCheckBoxClick(task: Task, isCheck: Boolean) {
+        viewModel.onTaskCheckChanged(task, isCheck)
     }
 }
 

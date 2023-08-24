@@ -2,11 +2,15 @@ package co.fanavari.androidfanavari40205.ui.task
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.data.task.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -37,4 +41,8 @@ class TaskViewModel @Inject constructor(
     }
 
     val tasks = tasksFlow.asLiveData()
+
+    fun onTaskCheckChanged(task: Task, isChecked: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        taskDao.update(task.copy(completed = isChecked))
+    }
 }
