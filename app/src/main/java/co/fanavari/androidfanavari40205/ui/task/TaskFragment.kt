@@ -11,12 +11,19 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.databinding.FragmentTaskBinding
 import co.fanavari.androidfanavari40205.utils.onQueryTextChanged
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickListener {
@@ -41,6 +48,43 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
 
         viewModel.tasks.observe(viewLifecycleOwner){
             taskAdapter.submitList(it)
+        }
+
+        ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+        ){
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val task = taskAdapter.currentList[viewHolder.absoluteAdapterPosition]
+                viewModel.onTaskSwiped(task)
+            }
+
+        }).attachToRecyclerView(binding.recyclerViewTasks)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+
+                viewModel.taskEvent.collect{event ->
+
+                    when(event){
+                        is TasksEvent.ShowUndoDeleteTaskMessage -> {
+                            Snackbar.make(requireView(), "Task deleted",Snackbar.LENGTH_LONG)
+                                .setAction("UNDO"){
+                                    viewModel.onUndoDeleteItem(event.task)
+                                }
+                        }
+                    }
+
+                }
+            }
+
         }
 
         val menuHost: MenuHost = requireActivity()

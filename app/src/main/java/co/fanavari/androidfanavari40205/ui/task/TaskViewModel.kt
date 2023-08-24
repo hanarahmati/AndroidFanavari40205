@@ -7,9 +7,11 @@ import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.data.task.TaskDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +31,9 @@ class TaskViewModel @Inject constructor(
         taskDao.getTask(it)
     }*/
 
+    private val tasksEventChannel = Channel<TasksEvent>()
+    val taskEvent = tasksEventChannel.receiveAsFlow()
+
     private val tasksFlow = combine(
         searchQuery,
         sortOrder,
@@ -45,4 +50,17 @@ class TaskViewModel @Inject constructor(
     fun onTaskCheckChanged(task: Task, isChecked: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         taskDao.update(task.copy(completed = isChecked))
     }
+
+    fun onTaskSwiped(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        taskDao.delete(task)
+        tasksEventChannel.send(TasksEvent.ShowUndoDeleteTaskMessage(task))
+    }
+
+    fun onUndoDeleteItem(task: Task) = viewModelScope.launch(Dispatchers.IO) {
+        taskDao.insert(task)
+    }
+}
+
+sealed class TasksEvent {
+    data class ShowUndoDeleteTaskMessage(val task: Task) : TasksEvent()
 }
