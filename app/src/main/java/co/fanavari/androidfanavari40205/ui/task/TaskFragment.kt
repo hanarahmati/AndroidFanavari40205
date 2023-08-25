@@ -170,6 +170,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
                 val result = bundle.getInt("add_edit_result")
                 viewModel.onAddEditResult(result)
             }
+
     }
 
     override fun onDestroyView() {
@@ -178,7 +179,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
     }
 
     override fun onItemClick(task: Task) {
-
+        viewModel.onTaskSelected(task)
     }
 
     override fun onCheckBoxClick(task: Task, isCheck: Boolean) {
