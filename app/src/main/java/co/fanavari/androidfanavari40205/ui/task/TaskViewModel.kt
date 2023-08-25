@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import co.fanavari.androidfanavari40205.data.task.PreferencesManager
+import co.fanavari.androidfanavari40205.data.task.SortOrder
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.data.task.TaskDao
 import co.fanavari.androidfanavari40205.ui.navigation.ADD_TASK_RESULT_OK
@@ -23,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val taskDao: TaskDao,
-    private val state: SavedStateHandle
+    private val state: SavedStateHandle,
+    private val prefManager : PreferencesManager
 ) : ViewModel() {
 
 
@@ -37,20 +40,21 @@ class TaskViewModel @Inject constructor(
     /*private val tasksFlow = searchQuery.flatMapLatest {
         taskDao.getTask(it)
     }*/
+    val preferencesFlow = prefManager.preferencesFlow
 
     private val tasksEventChannel = Channel<TasksEvent>()
     val taskEvent = tasksEventChannel.receiveAsFlow()
 
+//    @OptIn(ExperimentalCoroutinesApi::class)
     private val tasksFlow = combine(
-        searchQuery.asFlow(),
-        sortOrder,
-        hideCompleted
-    )
-    { query, sortOrder, hideCompleted ->
-        Triple(query, sortOrder, hideCompleted)
-    }.flatMapLatest { (query, sortOrder, hideCompleted) ->
-        taskDao.getTasks(query, sortOrder, hideCompleted)
+        searchQuery.asFlow(), preferencesFlow
+    ) { query, filterPreferences ->
+        Pair(query, filterPreferences)
+    }.flatMapLatest { (query, filterPreferences) ->
+        taskDao.getTasks(query, filterPreferences.sortOrder, filterPreferences.hideCompleted)
+
     }
+
 
     val tasks = tasksFlow.asLiveData()
 
@@ -90,6 +94,16 @@ class TaskViewModel @Inject constructor(
     fun onDeleteAllCompletedClick()  = viewModelScope
         .launch(Dispatchers.IO){
         tasksEventChannel.send(TasksEvent.NavigateToDeleteAllCompletedScreen)
+    }
+
+    fun onSortOrderSelected(sortOrder: SortOrder) = viewModelScope.launch {
+
+        prefManager.updateSortOrder(sortOrder)
+    }
+
+    fun onHideCompletedClicked(hideCompleted: Boolean) = viewModelScope.launch {
+
+        prefManager.updateHideCompleted(hideCompleted)
     }
 
 }

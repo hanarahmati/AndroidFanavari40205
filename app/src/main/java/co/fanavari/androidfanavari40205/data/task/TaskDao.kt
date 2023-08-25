@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import co.fanavari.androidfanavari40205.ui.task.SortOrder
+import co.fanavari.androidfanavari40205.data.task.SortOrder.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -28,8 +28,8 @@ interface TaskDao {
 
     fun getTasks(query: String, sortOrder: SortOrder, hideCompleted: Boolean): Flow<List<Task>> =
         when (sortOrder) {
-            SortOrder.BY_DATE -> getTasksSortedByDate(query, hideCompleted)
-            SortOrder.BY_NAME -> getTasksSortedByName(query, hideCompleted)
+            BY_DATE -> getTasksSortedByDate(query, hideCompleted)
+            BY_NAME -> getTasksSortedByName(query, hideCompleted)
         }
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

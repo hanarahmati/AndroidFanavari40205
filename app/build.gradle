@@ -88,6 +88,10 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$room_version")
+
+    def dataStoreVersion = "1.0.0"
+    //data store
+    implementation "androidx.datastore:datastore-preferences:$dataStoreVersion"
 }
 
 //hilt

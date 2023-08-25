@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.fanavari.androidfanavari40205.R
+import co.fanavari.androidfanavari40205.data.task.SortOrder
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.databinding.FragmentTaskBinding
 import co.fanavari.androidfanavari40205.utils.exhaustive
@@ -25,6 +26,7 @@ import co.fanavari.androidfanavari40205.utils.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -130,25 +132,30 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
                     viewModel.searchQuery.value = it
                 }
 
+                viewLifecycleOwner.lifecycleScope.launch {
+                    menu.findItem(R.id.action_hide_completed_tasks).isChecked =
+                        viewModel.preferencesFlow.first().hideCompleted
+                }
+
 
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_sort_by_name -> {
-                        viewModel.sortOrder.value = SortOrder.BY_NAME
+                        viewModel.onSortOrderSelected(SortOrder.BY_NAME)
                         true
                     }
 
                     R.id.action_sort_by_date_created -> {
-                        viewModel.sortOrder.value = SortOrder.BY_DATE
+                        viewModel.onSortOrderSelected(SortOrder.BY_DATE)
                         true
                     }
 
                     R.id.action_hide_completed_tasks -> {
 
                         menuItem.isChecked = !menuItem.isChecked
-                        viewModel.hideCompleted.value = menuItem.isChecked
+                        viewModel.onHideCompletedClicked(menuItem.isChecked)
                         true
                     }
 
@@ -193,6 +200,7 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
     }
 }
 
+/*
 enum class SortOrder{
     BY_NAME, BY_DATE
-}
+}*/
