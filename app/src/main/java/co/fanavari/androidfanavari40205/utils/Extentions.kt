@@ -22,3 +22,6 @@ inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit)
 
     })
 }
+
+val <T> T.exhaustive: T
+    get() = this

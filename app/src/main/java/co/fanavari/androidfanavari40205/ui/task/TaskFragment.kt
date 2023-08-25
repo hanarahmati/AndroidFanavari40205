@@ -13,12 +13,14 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import co.fanavari.androidfanavari40205.R
 import co.fanavari.androidfanavari40205.data.task.Task
 import co.fanavari.androidfanavari40205.databinding.FragmentTaskBinding
+import co.fanavari.androidfanavari40205.utils.exhaustive
 import co.fanavari.androidfanavari40205.utils.onQueryTextChanged
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,7 +83,21 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
                                 }
                                 .show()
                         }
-                    }
+
+                        is TasksEvent.NavigateToAddTaskScreen -> {
+                            val action = TaskFragmentDirections
+                                .actionTaskFragmentToAddEditTaskFragment(null, "New Task")
+                            findNavController().navigate(action)
+                        }
+                        is TasksEvent.NavigateToEditTaskScreen -> {
+                            val action = TaskFragmentDirections.actionTaskFragmentToAddEditTaskFragment(event.task, "Edit Task")
+                            findNavController().navigate(action)
+                        }
+
+                        is TasksEvent.ShowTaskSavedConfirmationMessage -> {
+                            Snackbar.make(requireView(), event.msg, Snackbar.LENGTH_LONG).show()
+                        }
+                    }.exhaustive
 
                 }
             }
@@ -142,6 +158,18 @@ class TaskFragment : Fragment(R.layout.fragment_task), TaskAdapter.OnItemClickLi
 
 
         },viewLifecycleOwner, Lifecycle.State.RESUMED)
+
+        binding.fabAddTask.setOnClickListener {
+            viewModel.onAddNewTask()
+        }
+
+        requireActivity().supportFragmentManager
+            .setFragmentResultListener(
+                "add_edit_req", viewLifecycleOwner)
+            { _ , bundle ->
+                val result = bundle.getInt("add_edit_result")
+                viewModel.onAddEditResult(result)
+            }
     }
 
     override fun onDestroyView() {

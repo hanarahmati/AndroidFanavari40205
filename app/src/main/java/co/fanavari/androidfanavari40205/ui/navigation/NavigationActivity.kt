@@ -1,5 +1,6 @@
 package co.fanavari.androidfanavari40205.ui.navigation
 
+import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.drawerlayout.widget.DrawerLayout
@@ -86,3 +87,6 @@ class NavigationActivity : AppCompatActivity() {
     }
 
 }
+
+const val ADD_TASK_RESULT_OK = Activity.RESULT_OK
+const val EDIT_TASK_RESULT_OK = Activity.RESULT_FIRST_USER + 1
